@@ -4,9 +4,12 @@ namespace ConferenceTrackManagement
 {
     public class Track
     {
+        public readonly int LunchDuration;
+        
         public Track()
         {
             MorningSession = new Session();
+            LunchDuration = 60;
         }
 
         public Session MorningSession { get; private set; }

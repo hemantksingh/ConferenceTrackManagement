@@ -27,5 +27,11 @@ namespace Tests.ConferenceTrackManagement
         {
             Assert.True(_track.MorningSession.IsFull());
         }
+
+        [Test]
+        public void ShouldAssignAnHourForLunch()
+        {
+            Assert.AreEqual(60, _track.LunchDuration);
+        }
     }
 }
