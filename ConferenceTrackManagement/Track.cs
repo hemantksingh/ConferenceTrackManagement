@@ -39,7 +39,7 @@ namespace ConferenceTrackManagement
                 }
             }
 
-            if (!AfternoonSession.HasSpace() && !NetworkingEventHasBeenAllocated())
+            if (AfternoonSession.CanAllocateNetworkingEvent())
             {
                 ISessionEvent allocatedEvent = AllocateNetworkingEvent();
                 _listener.EventAllocated(allocatedEvent.StartTime.ToString("hh:mmtt"), allocatedEvent.Name);

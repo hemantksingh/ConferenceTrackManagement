@@ -6,7 +6,7 @@ namespace ConferenceTrackManagement
 {
     public abstract class Session
     {
-        private readonly IList<Talk> _talks = new List<Talk>();
+        protected readonly IList<Talk> AllocatedTalks = new List<Talk>();
         protected int Capacity;
         protected DateTime StartTime;
 
@@ -14,14 +14,16 @@ namespace ConferenceTrackManagement
         {
             Talk talkWithStartTime = talk.AssignStartTime(StartTime);
             StartTime = StartTime.AddMinutes(talk.Duration);
-            _talks.Add(talkWithStartTime);
+            AllocatedTalks.Add(talkWithStartTime);
             return talkWithStartTime;
         }
 
         public bool HasSpace()
         {
-            return _talks.Sum(talk => talk.Duration) < Capacity;
+            return AllocatedTalks.Sum(talk => talk.Duration) < Capacity;
         }
+
+        public abstract bool CanAllocateNetworkingEvent();
     }
 
     internal class AfternoonSession : Session
@@ -31,6 +33,12 @@ namespace ConferenceTrackManagement
             Capacity = 240;
             StartTime = DateTime.Today.AddHours(13);
         }
+
+        public override bool CanAllocateNetworkingEvent()
+        {
+            int totalTalkDuration = AllocatedTalks.Sum(talk => talk.Duration);
+            return totalTalkDuration >= 180 && totalTalkDuration <= Capacity;
+        }
     }
 
     internal class MorningSession : Session
@@ -39,6 +47,11 @@ namespace ConferenceTrackManagement
         {
             Capacity = 180;
             StartTime = DateTime.Today.AddHours(9);
+        }
+
+        public override bool CanAllocateNetworkingEvent()
+        {
+            return false;
         }
     }
 }
