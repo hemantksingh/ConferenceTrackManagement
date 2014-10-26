@@ -49,6 +49,12 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
+        public void ShouldAssignNetworkingEvent()
+        {
+            Assert.IsTrue(_track.NetworkingEventHasBeenAllocated());
+        }
+
+        [Test]
         public void ShouldAssignEachTalkToTheTrack()
         {
             const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
@@ -61,7 +67,8 @@ namespace Tests.ConferenceTrackManagement
 02:45PM Pair Programming vs Noise 45min
 03:30PM Programming in the Boondocks of Seattle 30min
 04:00PM Ruby vs. Clojure for Back-End Development 30min
-04:30PM User Interface CSS in Rails Apps 30min";
+04:30PM User Interface CSS in Rails Apps 30min
+05:00PM Networking Event";
 
             Assert.AreEqual(expectedReport, _reporter.Generate());
         }

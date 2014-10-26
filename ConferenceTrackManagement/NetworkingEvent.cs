@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 
 namespace ConferenceTrackManagement
 {
-    internal class Lunch : ISessionEvent
+    internal class NetworkingEvent : ISessionEvent
     {
-        public Lunch()
+        public NetworkingEvent()
         {
-            Name = "Lunch";
-            Duration = 60;
-            StartTime = DateTime.Today.AddHours(12);
+            Name = "Networking Event";
+            StartTime = DateTime.Today.AddHours(17);
+            Duration = 120;
         }
 
         public string Name { get; private set; }

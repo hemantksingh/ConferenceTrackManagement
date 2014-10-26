@@ -8,6 +8,7 @@ namespace ConferenceTrackManagement
         public readonly Session MorningSession;
         private readonly IListenToSessionEventAllocated _listener;
         private Lunch _lunch;
+        private NetworkingEvent _networkingEvent;
 
         public Track(IListenToSessionEventAllocated listener)
         {
@@ -37,6 +38,17 @@ namespace ConferenceTrackManagement
                     PublishEventAllocated(allocatedTalk);
                 }
             }
+
+            if (!AfternoonSession.HasSpace() && !NetworkingEventHasBeenAllocated())
+            {
+                ISessionEvent allocatedEvent = AllocateNetworkingEvent();
+                _listener.EventAllocated(allocatedEvent.StartTime.ToString("hh:mmtt"), allocatedEvent.Name);
+            }
+        }
+
+        private ISessionEvent AllocateNetworkingEvent()
+        {
+            return _networkingEvent = new NetworkingEvent();
         }
 
         private void PublishEventAllocated(ISessionEvent sessionEvent)
@@ -53,6 +65,11 @@ namespace ConferenceTrackManagement
         public bool LunchHasBeenAllocated()
         {
             return _lunch != null;
+        }
+
+        public bool NetworkingEventHasBeenAllocated()
+        {
+            return _networkingEvent != null;
         }
     }
 }
