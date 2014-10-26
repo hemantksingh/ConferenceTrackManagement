@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="SetOfTalksWithCombinedDurationOf180Minutes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetOfTalksWithCombinedDurationofOver180Minutes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

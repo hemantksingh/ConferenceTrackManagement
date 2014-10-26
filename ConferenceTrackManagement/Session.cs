@@ -4,32 +4,41 @@ using System.Linq;
 
 namespace ConferenceTrackManagement
 {
-    public class Session
+    public abstract class Session
     {
-        private const int Capacity = 180;
         private readonly IList<Talk> _talks = new List<Talk>();
-        private DateTime _startTime = DateTime.Today.AddHours(9);
-        private Lunch _lunch;
+        protected int Capacity;
+        protected DateTime StartTime;
 
-        public ISessionEvent AllocateTalk(Talk talk, Func<ISessionEvent> actionToPerformIfTalkCannotBeAllocated)
+        public ISessionEvent AllocateTalk(Talk talk)
         {
-            if (IsFull()) return actionToPerformIfTalkCannotBeAllocated();
-            
-            Talk talkWithStartTime = talk.AssignStartTime(_startTime);
-            _startTime = _startTime.AddMinutes(talk.Duration);            
+            Talk talkWithStartTime = talk.AssignStartTime(StartTime);
+            StartTime = StartTime.AddMinutes(talk.Duration);
             _talks.Add(talkWithStartTime);
             return talkWithStartTime;
         }
 
-        public bool IsFull()
+        public bool HasSpace()
         {
-            return _talks.Sum(talk => talk.Duration) == Capacity;
+            return _talks.Sum(talk => talk.Duration) < Capacity;
         }
+    }
 
-        public ISessionEvent AllocateLunch(Lunch lunch)
+    internal class AfternoonSession : Session
+    {
+        public AfternoonSession()
         {
-            _lunch = lunch;
-            return _lunch;
+            Capacity = 240;
+            StartTime = DateTime.Today.AddHours(13);
+        }
+    }
+
+    internal class MorningSession : Session
+    {
+        public MorningSession()
+        {
+            Capacity = 180;
+            StartTime = DateTime.Today.AddHours(9);
         }
     }
 }

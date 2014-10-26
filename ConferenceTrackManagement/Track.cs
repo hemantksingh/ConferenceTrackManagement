@@ -1,34 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ConferenceTrackManagement
 {
     public class Track
     {
+        public readonly Session AfternoonSession;
+        public readonly Session MorningSession;
         private readonly IListenToSessionEventAllocated _listener;
+        private Lunch _lunch;
 
         public Track(IListenToSessionEventAllocated listener)
         {
             _listener = listener;
-            MorningSession = new Session();
+            MorningSession = new MorningSession();
+            AfternoonSession = new AfternoonSession();
         }
-
-        public Session MorningSession { get; private set; }
 
         public void AllocateTalks(IEnumerable<Talk> talks)
         {
-            Func<ISessionEvent> allocateLunchIfTalkCannotBeAllocated = () => MorningSession.AllocateLunch(new Lunch());            
-            
             foreach (Talk talk in talks)
             {
-                ISessionEvent allocatedTalk = MorningSession.AllocateTalk(talk, allocateLunchIfTalkCannotBeAllocated);
+                if (MorningSession.HasSpace())
+                {
+                    ISessionEvent allocatedTalk = MorningSession.AllocateTalk(talk);
+                    PublishEventAllocated(allocatedTalk);
+                }
+                else
+                {
+                    if (!LunchHasBeenAllocated())
+                    {
+                        ISessionEvent allocatedLunch = AllocateLunch();
+                        _listener.EventAllocated(allocatedLunch.StartTime.ToString("hh:mmtt"), allocatedLunch.Name);
+                    }
 
-                _listener.EventAllocated(allocatedTalk.StartTime.ToString("hh:mmtt"), allocatedTalk.Name,
-                    allocatedTalk.Duration + "min");
+                    ISessionEvent allocatedTalk = AfternoonSession.AllocateTalk(talk);
+                    PublishEventAllocated(allocatedTalk);
+                }
             }
+        }
 
-            ISessionEvent allocateLunch = MorningSession.AllocateLunch(new Lunch());
-            _listener.EventAllocated(allocateLunch.StartTime.ToString("hh:mmtt"), allocateLunch.Name);
+        private void PublishEventAllocated(ISessionEvent sessionEvent)
+        {
+            _listener.EventAllocated(sessionEvent.StartTime.ToString("hh:mmtt"), sessionEvent.Name,
+                sessionEvent.Duration + "min");
+        }
+
+        private Lunch AllocateLunch()
+        {
+            return _lunch = new Lunch();
+        }
+
+        public bool LunchHasBeenAllocated()
+        {
+            return _lunch != null;
         }
     }
 }
