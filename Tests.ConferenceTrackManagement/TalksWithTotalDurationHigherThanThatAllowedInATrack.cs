@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ConferenceTrackManagement;
 using NUnit.Framework;
 
 namespace Tests.ConferenceTrackManagement
 {
-    class SetOfTalksWithTotalDurationWithinThatAllowedInATrack
+    public class TalksWithTotalDurationHigherThanThatAllowedInATrack
     {
         private readonly Track _track;
         private readonly Reporter _reporter;
+        private readonly IEnumerable<Talk> _unAllocateTalks;
 
-        public SetOfTalksWithTotalDurationWithinThatAllowedInATrack()
+        public TalksWithTotalDurationHigherThanThatAllowedInATrack()
         {
             _reporter = new Reporter();
             _track = new Track(_reporter);
@@ -25,9 +27,10 @@ namespace Tests.ConferenceTrackManagement
                 new Talk("Programming in the Boondocks of Seattle", 30),
                 new Talk("Ruby vs. Clojure for Back-End Development", 30),
                 new Talk("User Interface CSS in Rails Apps", 30),
+                new Talk("User Interface CSS in Rails Apps 2", 30),
             };
 
-            _track.AllocateTalks(talks);
+            _unAllocateTalks = _track.AllocateTalks(talks);
         }
 
         [Test]
@@ -37,25 +40,19 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
-        public void ShouldAllocateLunch()
-        {
-            Assert.IsTrue(_track.LunchHasBeenAllocated());
-        }
-
-        [Test]
-        public void ShouldAssignTalkToTheAfternoonSession()
-        {
-            Assert.NotNull(_track.AfternoonSession);
-        }
-
-        [Test]
         public void ShouldAssignNetworkingEvent()
         {
             Assert.IsTrue(_track.NetworkingEventHasBeenAllocated());
         }
 
         [Test]
-        public void ShouldAssignEachTalkToTheTrack()
+        public void ShouldReturnTheUnAllocatedTalks()
+        {
+            Assert.AreEqual("User Interface CSS in Rails Apps 2", _unAllocateTalks.First().Name);
+        }
+
+        [Test]
+        public void ShouldNotAssignTheLastTalkToTheTrack()
         {
             const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
 10:00AM Overdoing it in Python 45min

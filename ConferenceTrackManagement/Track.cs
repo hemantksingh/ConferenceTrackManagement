@@ -17,8 +17,9 @@ namespace ConferenceTrackManagement
             AfternoonSession = new AfternoonSession();
         }
 
-        public void AllocateTalks(IEnumerable<Talk> talks)
+        public IEnumerable<Talk> AllocateTalks(IEnumerable<Talk> talks)
         {
+            IList<Talk> unAllocatedTalks = new List<Talk>();
             foreach (Talk talk in talks)
             {
                 if (MorningSession.HasSpace())
@@ -34,10 +35,14 @@ namespace ConferenceTrackManagement
                     ISessionEvent allocatedTalk = AfternoonSession.AllocateTalk(talk);
                     PublishTalkAllocated(allocatedTalk);
                 }
+                else
+                    unAllocatedTalks.Add(talk);
             }
 
             if (AfternoonSession.CanAllocateNetworkingEvent())
                 PublishEventAllocated(AllocateNetworkingEvent());
+            
+            return unAllocatedTalks;
         }
 
         private void PublishEventAllocated(ISessionEvent allocatedLunch)

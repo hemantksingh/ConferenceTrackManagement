@@ -10,15 +10,13 @@ namespace ConferenceTrackManagement
             Duration = duration;
         }
 
-        public bool IsAllocated { get; private set; }
-
         public string Name { get; private set; }
         public int Duration { get; private set; }
         public DateTime StartTime { get; private set; }
 
         public Talk AssignStartTime(DateTime startTime)
         {
-            var talk = new Talk(Name, Duration) {StartTime = startTime, IsAllocated = true};
+            var talk = new Talk(Name, Duration) {StartTime = startTime};
 
             return talk;
         }
