@@ -36,7 +36,13 @@ namespace Tests.ConferenceTrackManagement
         [Test]
         public void ShouldFillUpTheMorningSession()
         {
-            Assert.False(_track.MorningSession.HasSpace());
+            Assert.False(_track.MorningSession.CanAccommodate(new Talk("Another talk", 30)));
+        }
+
+        [Test]
+        public void ShouldFillUpTheAfternoonSession()
+        {
+            Assert.False(_track.AfternoonSession.CanAccommodate(new Talk("Another talk", 30)));
         }
 
         [Test]

@@ -7,37 +7,53 @@ namespace ConferenceTrackManagement
     public abstract class Session
     {
         protected readonly IList<Talk> AllocatedTalks = new List<Talk>();
-        protected int Capacity;
         protected DateTime StartTime;
+        protected int TotalCapacity;
 
         public ISessionEvent AllocateTalk(Talk talk)
         {
+            if (!CanAccommodate(talk))
+                throw new SessionDurationExceededException(talk.Duration, TimeLeft());
+            
             Talk talkWithStartTime = talk.AssignStartTime(StartTime);
             StartTime = StartTime.AddMinutes(talk.Duration);
             AllocatedTalks.Add(talkWithStartTime);
             return talkWithStartTime;
         }
 
-        public bool HasSpace()
+        public bool CanAccommodate(Talk talk)
         {
-            return AllocatedTalks.Sum(talk => talk.Duration) < Capacity;
+            return TimeLeft() >= talk.Duration;
+        }
+
+        private int TimeLeft()
+        {
+            return TotalCapacity - AllocatedTalks.Sum(t => t.Duration);
         }
 
         public abstract bool CanAllocateNetworkingEvent();
+    }
+
+    public class SessionDurationExceededException : Exception
+    {
+        public SessionDurationExceededException(int talkDuration, int sessionDuration) :base(string.Format(
+                "Unable to allocate talk with duration {0} min(s). Only {1} unallocated min(s) are left in this session.",
+                talkDuration, sessionDuration))
+        {}
     }
 
     internal class AfternoonSession : Session
     {
         public AfternoonSession()
         {
-            Capacity = 240;
+            TotalCapacity = 240;
             StartTime = DateTime.Today.AddHours(13);
         }
 
         public override bool CanAllocateNetworkingEvent()
         {
-            int totalTalkDuration = AllocatedTalks.Sum(talk => talk.Duration);
-            return totalTalkDuration >= 180 && totalTalkDuration <= Capacity;
+            int totalDurationOfAllocatedTalks = AllocatedTalks.Sum(talk => talk.Duration);
+            return totalDurationOfAllocatedTalks >= 180 && totalDurationOfAllocatedTalks <= TotalCapacity;
         }
     }
 
@@ -45,7 +61,7 @@ namespace ConferenceTrackManagement
     {
         public MorningSession()
         {
-            Capacity = 180;
+            TotalCapacity = 180;
             StartTime = DateTime.Today.AddHours(9);
         }
 

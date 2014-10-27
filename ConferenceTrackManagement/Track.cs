@@ -22,12 +22,12 @@ namespace ConferenceTrackManagement
             IList<Talk> unAllocatedTalks = new List<Talk>();
             foreach (Talk talk in talks)
             {
-                if (MorningSession.HasSpace())
+                if (MorningSession.CanAccommodate(talk))
                 {
                     ISessionEvent allocatedTalk = MorningSession.AllocateTalk(talk);
                     PublishTalkAllocated(allocatedTalk);
                 }
-                else if (AfternoonSession.HasSpace())
+                else if (AfternoonSession.CanAccommodate(talk))
                 {
                     if (!LunchHasBeenAllocated())
                         PublishEventAllocated(AllocateLunch());
