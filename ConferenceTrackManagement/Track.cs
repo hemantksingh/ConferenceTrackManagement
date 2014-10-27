@@ -21,37 +21,30 @@ namespace ConferenceTrackManagement
         {
             foreach (Talk talk in talks)
             {
+                ISessionEvent allocatedTalk;
                 if (MorningSession.HasSpace())
-                {
-                    ISessionEvent allocatedTalk = MorningSession.AllocateTalk(talk);
-                    PublishEventAllocated(allocatedTalk);
-                }
+                    allocatedTalk = MorningSession.AllocateTalk(talk);
                 else
                 {
                     if (!LunchHasBeenAllocated())
-                    {
-                        ISessionEvent allocatedLunch = AllocateLunch();
-                        _listener.EventAllocated(allocatedLunch.StartTime.ToString("hh:mmtt"), allocatedLunch.Name);
-                    }
+                        PublishEventAllocated(AllocateLunch());
 
-                    ISessionEvent allocatedTalk = AfternoonSession.AllocateTalk(talk);
-                    PublishEventAllocated(allocatedTalk);
+                    allocatedTalk = AfternoonSession.AllocateTalk(talk);
                 }
+
+                PublishTalkAllocated(allocatedTalk);
             }
 
             if (AfternoonSession.CanAllocateNetworkingEvent())
-            {
-                ISessionEvent allocatedEvent = AllocateNetworkingEvent();
-                _listener.EventAllocated(allocatedEvent.StartTime.ToString("hh:mmtt"), allocatedEvent.Name);
-            }
+                PublishEventAllocated(AllocateNetworkingEvent());
         }
 
-        private ISessionEvent AllocateNetworkingEvent()
+        private void PublishEventAllocated(ISessionEvent allocatedLunch)
         {
-            return _networkingEvent = new NetworkingEvent();
+            _listener.EventAllocated(allocatedLunch.StartTime.ToString("hh:mmtt"), allocatedLunch.Name);
         }
 
-        private void PublishEventAllocated(ISessionEvent sessionEvent)
+        private void PublishTalkAllocated(ISessionEvent sessionEvent)
         {
             _listener.EventAllocated(sessionEvent.StartTime.ToString("hh:mmtt"), sessionEvent.Name,
                 sessionEvent.Duration + "min");
@@ -60,6 +53,11 @@ namespace ConferenceTrackManagement
         private Lunch AllocateLunch()
         {
             return _lunch = new Lunch();
+        }
+
+        private ISessionEvent AllocateNetworkingEvent()
+        {
+            return _networkingEvent = new NetworkingEvent();
         }
 
         public bool LunchHasBeenAllocated()
