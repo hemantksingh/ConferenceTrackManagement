@@ -26,9 +26,13 @@ namespace ConferenceTrackManagement
             _builder.AppendLine(string.Format("{0} {1}", startTime, eventName));
         }
 
-        public void TrackCreated(string trackName)
+        public void TrackCreated(int trackNumber)
         {
-            _builder.AppendLine(trackName + ":");
+            const string track = "Track";
+            
+            if (_builder.ToString().Contains(track))
+                _builder.AppendLine();
+            _builder.AppendLine(track + trackNumber + ":");
         }
     }
 }
