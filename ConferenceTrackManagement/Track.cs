@@ -21,18 +21,19 @@ namespace ConferenceTrackManagement
         {
             foreach (Talk talk in talks)
             {
-                ISessionEvent allocatedTalk;
                 if (MorningSession.HasSpace())
-                    allocatedTalk = MorningSession.AllocateTalk(talk);
-                else
+                {
+                    ISessionEvent allocatedTalk = MorningSession.AllocateTalk(talk);
+                    PublishTalkAllocated(allocatedTalk);
+                }
+                else if (AfternoonSession.HasSpace())
                 {
                     if (!LunchHasBeenAllocated())
                         PublishEventAllocated(AllocateLunch());
 
-                    allocatedTalk = AfternoonSession.AllocateTalk(talk);
+                    ISessionEvent allocatedTalk = AfternoonSession.AllocateTalk(talk);
+                    PublishTalkAllocated(allocatedTalk);
                 }
-
-                PublishTalkAllocated(allocatedTalk);
             }
 
             if (AfternoonSession.CanAllocateNetworkingEvent())

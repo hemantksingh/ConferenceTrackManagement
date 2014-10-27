@@ -4,12 +4,12 @@ using NUnit.Framework;
 
 namespace Tests.ConferenceTrackManagement
 {
-    class SetOfTalksWithCombinedDurationofOver180Minutes
+    public class SetOfTalksWithTotalDurationHigherThanThatAllowedInATrack
     {
         private readonly Track _track;
         private readonly Reporter _reporter;
 
-        public SetOfTalksWithCombinedDurationofOver180Minutes()
+        public SetOfTalksWithTotalDurationHigherThanThatAllowedInATrack()
         {
             _reporter = new Reporter();
             _track = new Track(_reporter);
@@ -25,6 +25,7 @@ namespace Tests.ConferenceTrackManagement
                 new Talk("Programming in the Boondocks of Seattle", 30),
                 new Talk("Ruby vs. Clojure for Back-End Development", 30),
                 new Talk("User Interface CSS in Rails Apps", 30),
+                new Talk("User Interface CSS in Rails Apps 2", 30),
             };
 
             _track.AllocateTalks(talks);
@@ -36,26 +37,15 @@ namespace Tests.ConferenceTrackManagement
             Assert.False(_track.MorningSession.HasSpace());
         }
 
+
         [Test]
-        public void ShouldAllocateLunch()
+        public void ShouldStartANetworkingEvent()
         {
-            Assert.IsTrue(_track.LunchHasBeenAllocated());
+            Assert.True(_track.NetworkingEventHasBeenAllocated());
         }
 
         [Test]
-        public void ShouldAssignTalkToTheAfternoonSession()
-        {
-            Assert.NotNull(_track.AfternoonSession);
-        }
-
-        [Test]
-        public void ShouldAssignNetworkingEvent()
-        {
-            Assert.IsTrue(_track.NetworkingEventHasBeenAllocated());
-        }
-
-        [Test]
-        public void ShouldAssignEachTalkToTheTrack()
+        public void ShouldNotAssignTheLastTalkToTheTrack()
         {
             const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
 10:00AM Overdoing it in Python 45min
