@@ -4,12 +4,12 @@ using NUnit.Framework;
 
 namespace Tests.ConferenceTrackManagement
 {
-    internal class ApplicationTests
+    internal class ApplicationWithAValidTextInput
     {
         private readonly string _expectedOutput;
         private readonly Reporter _reporter;
 
-        public ApplicationTests()
+        public ApplicationWithAValidTextInput()
         {
             _reporter = new Reporter();
             var application = new Application(_reporter);
@@ -19,9 +19,9 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
-        public void ProducesTwoTracks()
+        public void ShouldAllocateTalksToConferenceTracks()
         {
-            string report = _reporter.Generate().Replace("\r", "");
+            string report = _reporter.Generate().Replace("\r", string.Empty);
             Assert.AreEqual(_expectedOutput, report);
         }
     }

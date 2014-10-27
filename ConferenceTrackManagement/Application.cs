@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ConferenceTrackManagement
@@ -14,46 +16,55 @@ namespace ConferenceTrackManagement
 
         public void Start(string inputFile)
         {
-            var talks = new List<Talk>
+            try
             {
-                new Talk("Writing Fast Tests Against Enterprise Rails", 60),
-                new Talk("Overdoing it in Python", 45),
-                new Talk("Lua for the Masses", 30),
-                new Talk("Ruby Errors from Mismatched Gem Versions", 45),
-                new Talk("Common Ruby Errors", 45),
-                new Talk("Rails for Python Developers lightning", 0),
-                new Talk("Communicating Over Distance", 60),
-                new Talk("Accounting-Driven Development", 45),
-                new Talk("Woah", 30),
-                new Talk("Sit Down and Write", 30),
-                new Talk("Pair Programming vs Noise", 45),                
-                new Talk("Rails Magic", 60),
-                new Talk("Ruby on Rails: Why We Should Move On", 60),
-                new Talk("Clojure Ate Scala (on my project)", 60),
-                new Talk("Communicating Over Distance", 45),                                
-                new Talk("Programming in the Boondocks of Seattle", 30),
-                new Talk("Ruby vs. Clojure for Back-End Development", 30),
-                new Talk("Ruby on Rails Legacy App Maintenance", 60),
-                new Talk("A World Without HackerNews", 30),                
-                new Talk("User Interface CSS in Rails Apps", 30),
-            };
+                IEnumerable<Talk> talks = ParseInput(inputFile);
 
-            IEnumerable<Talk> unAllocatedTalks;
-            int trackNo = 0;
+                IEnumerable<Talk> unAllocatedTalks;
+                int trackNo = 0;
 
-            do
+                do
+                {
+                    trackNo++;
+                    var track = new Track((IListenToSessionEventAllocated) _listener);
+                    _listener.TrackCreated(trackNo);
+                    unAllocatedTalks = track.AllocateTalks(talks);
+                    talks = unAllocatedTalks;
+                } while (unAllocatedTalks.Any());
+            }
+            catch (Exception ex)
             {
-                trackNo++ ;
-                var track = new Track((IListenToSessionEventAllocated) _listener);
-                _listener.TrackCreated("Track " + trackNo);
-                unAllocatedTalks = track.AllocateTalks(talks);
-                talks = (List<Talk>) unAllocatedTalks;
-            } while (unAllocatedTalks.Any());
+                // Log the exception.
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static IEnumerable<Talk> ParseInput(string inputFile)
+        {
+            IList<Talk> talks = new List<Talk>();
+            using (var sr = new StreamReader(inputFile))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string lastWord = line.Split(' ').Last();
+                    int duration;
+                    if (lastWord == "lightning")
+                        duration = 5;
+                    else if (!int.TryParse(lastWord.Replace("min", string.Empty), out duration))
+                        throw new InvalidDataException("The input text is in an invalid format.");
+
+                    string name = line.Replace(lastWord, string.Empty).Trim();
+
+                    talks.Add(new Talk(name, duration));
+                }
+            }
+            return talks;
         }
     }
 
     public interface IListenToTrackCreated
     {
-        void TrackCreated(string trackName);
+        void TrackCreated(int trackNumber);
     }
 }
