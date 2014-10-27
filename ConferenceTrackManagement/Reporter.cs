@@ -2,7 +2,7 @@
 
 namespace ConferenceTrackManagement
 {
-    public class Reporter : IListenToSessionEventAllocated
+    public class Reporter : IListenToSessionEventAllocated, IListenToTrackCreated
     {
         private readonly StringBuilder _builder;
 
@@ -24,6 +24,11 @@ namespace ConferenceTrackManagement
         public void EventAllocated(string startTime, string eventName)
         {
             _builder.AppendLine(string.Format("{0} {1}", startTime, eventName));
+        }
+
+        public void TrackCreated(string trackName)
+        {
+            _builder.AppendLine(trackName + ":");
         }
     }
 }
