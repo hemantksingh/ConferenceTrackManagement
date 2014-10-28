@@ -6,11 +6,13 @@ namespace Tests.ConferenceTrackManagement
     internal class ApplicationWithAnInvalidInput
     {
         private readonly ErrorHandler _errorHandler;
+        private readonly Reporter _reporter;
 
         public ApplicationWithAnInvalidInput()
         {
             _errorHandler = new ErrorHandler();
-            var application = new Application(new Reporter(), _errorHandler);
+            _reporter = new Reporter();
+            var application = new Application(_reporter, _errorHandler);
             application.Start("InvalidInput.txt");
         }
 
@@ -19,6 +21,12 @@ namespace Tests.ConferenceTrackManagement
         {
             const string expectedOutput = "ERROR: The input text is in an invalid format.";
             Assert.AreEqual(expectedOutput, _errorHandler.Report());
+        }
+
+        [Test]
+        public void ShouldNotAllocateAnyTalks()
+        {
+            Assert.AreEqual(string.Empty, _reporter.Report());
         }
     }
 }

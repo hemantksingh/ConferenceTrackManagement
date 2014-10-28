@@ -11,7 +11,7 @@ namespace ConferenceTrackManagement
             _builder = new StringBuilder();
         }
 
-        public string Generate()
+        public string Report()
         {
             return _builder.ToString().TrimEnd('\r', '\n');
         }
