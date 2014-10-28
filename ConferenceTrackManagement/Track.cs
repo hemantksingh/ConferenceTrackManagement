@@ -53,7 +53,7 @@ namespace ConferenceTrackManagement
         private void PublishTalkAllocated(ISessionEvent sessionEvent)
         {
             _listener.EventAllocated(sessionEvent.StartTime.ToString("hh:mmtt"), sessionEvent.Name,
-                sessionEvent.Duration + "min");
+                sessionEvent.IsLightning ? "lightning" : sessionEvent.Duration + "min");
         }
 
         private Lunch AllocateLunch()

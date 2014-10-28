@@ -5,7 +5,7 @@
 11:15AM Ruby Errors from Mismatched Gem Versions 45min
 12:00PM Lunch
 01:00PM Common Ruby Errors 45min
-01:45PM Rails for Python Developers 5min
+01:45PM Rails for Python Developers lightning
 01:50PM Communicating Over Distance 60min
 02:50PM Accounting-Driven Development 45min
 03:35PM Woah 30min
