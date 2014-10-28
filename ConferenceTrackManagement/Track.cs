@@ -13,8 +13,8 @@ namespace ConferenceTrackManagement
         public Track(IListenToSessionEventAllocated listener)
         {
             _listener = listener;
-            MorningSession = new MorningSession();
-            AfternoonSession = new AfternoonSession();
+            MorningSession = new MorningSession(listener);
+            AfternoonSession = new AfternoonSession(listener);
         }
 
         public IEnumerable<Talk> AllocateTalks(IEnumerable<Talk> talks)
@@ -24,16 +24,14 @@ namespace ConferenceTrackManagement
             {
                 if (MorningSession.CanAccommodate(talk))
                 {
-                    Talk allocatedTalk = MorningSession.AllocateTalk(talk);
-                    PublishTalkAllocated(allocatedTalk);
+                    MorningSession.AllocateTalk(talk);
                 }
                 else if (AfternoonSession.CanAccommodate(talk))
                 {
                     if (!LunchHasBeenAllocated())
                         AllocateLunch();
 
-                    Talk allocatedTalk = AfternoonSession.AllocateTalk(talk);
-                    PublishTalkAllocated(allocatedTalk);
+                    AfternoonSession.AllocateTalk(talk);
                 }
                 else
                     unAllocatedTalks.Add(talk);
@@ -48,12 +46,6 @@ namespace ConferenceTrackManagement
         private void PublishEventAllocated(ISessionEvent allocatedLunch)
         {
             _listener.EventAllocated(allocatedLunch.StartTime.ToString("hh:mmtt"), allocatedLunch.Name);
-        }
-
-        private void PublishTalkAllocated(Talk talk)
-        {
-            _listener.EventAllocated(talk.StartTime.ToString("hh:mmtt"), talk.Name,
-                talk.IsLightning ? "lightning" : talk.Duration + "min");
         }
 
         private void AllocateLunch()
