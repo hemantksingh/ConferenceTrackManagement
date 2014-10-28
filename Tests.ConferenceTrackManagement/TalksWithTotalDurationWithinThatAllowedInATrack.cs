@@ -49,13 +49,13 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
-        public void ShouldAssignNetworkingEvent()
+        public void ShouldAllocateNetworkingEvent()
         {
             Assert.IsTrue(_track.NetworkingEventHasBeenAllocated());
         }
 
         [Test]
-        public void ShouldAssignEachTalkToTheTrack()
+        public void ShouldAllocateEachTalkToTheTrack()
         {
             const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
 10:00AM Overdoing it in Python 45min
