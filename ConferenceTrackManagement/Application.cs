@@ -8,10 +8,12 @@ namespace ConferenceTrackManagement
     public class Application
     {
         private readonly IListenToTrackCreated _listener;
+        private readonly IHandleErrors _errorHandler;
 
-        public Application(IListenToTrackCreated listener)
+        public Application(IListenToTrackCreated listener, IHandleErrors errorHandler)
         {
             _listener = listener;
+            _errorHandler = errorHandler;
         }
 
         public void Start(string inputFile)
@@ -34,8 +36,7 @@ namespace ConferenceTrackManagement
             }
             catch (Exception ex)
             {
-                // Log the exception.
-                Console.WriteLine(ex.Message);
+                _errorHandler.HandleError(ex);
             }
         }
 
@@ -61,6 +62,11 @@ namespace ConferenceTrackManagement
             }
             return talks;
         }
+    }
+
+    public interface IHandleErrors
+    {
+        void HandleError(Exception exception);
     }
 
     public interface IListenToTrackCreated
