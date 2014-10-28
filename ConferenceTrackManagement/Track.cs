@@ -30,7 +30,7 @@ namespace ConferenceTrackManagement
                 else if (AfternoonSession.CanAccommodate(talk))
                 {
                     if (!LunchHasBeenAllocated())
-                        PublishEventAllocated(AllocateLunch());
+                        AllocateLunch();
 
                     Talk allocatedTalk = AfternoonSession.AllocateTalk(talk);
                     PublishTalkAllocated(allocatedTalk);
@@ -40,7 +40,7 @@ namespace ConferenceTrackManagement
             }
 
             if (AfternoonSession.CanAllocateNetworkingEvent())
-                PublishEventAllocated(AllocateNetworkingEvent());
+                AllocateNetworkingEvent();
             
             return unAllocatedTalks;
         }
@@ -56,14 +56,14 @@ namespace ConferenceTrackManagement
                 talk.IsLightning ? "lightning" : talk.Duration + "min");
         }
 
-        private Lunch AllocateLunch()
+        private void AllocateLunch()
         {
-            return _lunch = new Lunch();
+            PublishEventAllocated(_lunch = new Lunch());
         }
 
-        private ISessionEvent AllocateNetworkingEvent()
+        private void AllocateNetworkingEvent()
         {
-            return _networkingEvent = new NetworkingEvent();
+            PublishEventAllocated(_networkingEvent = new NetworkingEvent());
         }
 
         public bool LunchHasBeenAllocated()
