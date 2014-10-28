@@ -57,7 +57,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
         [Test]
         public void ShouldAllocateEachTalkToTheTrack()
         {
-            const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
+            string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
 10:00AM Overdoing it in Python 45min
 10:45AM Lua for the Masses 30min
 11:15AM Ruby Errors from Mismatched Gem Versions 45min
@@ -68,7 +68,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
 03:30PM Programming in the Boondocks of Seattle 30min
 04:00PM Ruby vs. Clojure for Back-End Development 30min
 04:30PM User Interface CSS in Rails Apps 30min
-05:00PM Networking Event";
+05:00PM Networking Event".Replace("\r", string.Empty);
 
             Assert.AreEqual(expectedReport, _reporter.Report());
         }
