@@ -70,7 +70,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
 04:30PM User Interface CSS in Rails Apps 30min
 05:00PM Networking Event".Replace("\r", string.Empty);
 
-            Assert.AreEqual(expectedReport, _reporter.Report());
+            Assert.AreEqual(expectedReport, _reporter.Report().Replace("\r", string.Empty));
         }
     }
 }

@@ -7,17 +7,17 @@ namespace ConferenceTrackManagement
 {
     public class Application
     {
-        private readonly IListenToTrackCreated _listener;
+        private const string OutputTxt = "Output.txt";
         private readonly IHandleErrors _errorHandler;
 
-        public Application(IListenToTrackCreated listener, IHandleErrors errorHandler)
+        public Application(IHandleErrors errorHandler)
         {
-            _listener = listener;
             _errorHandler = errorHandler;
         }
 
         public void Start(string inputFile)
         {
+            var reporter = new Reporter();
             try
             {
                 IEnumerable<Talk> talks = ParseInput(inputFile);
@@ -28,11 +28,13 @@ namespace ConferenceTrackManagement
                 do
                 {
                     trackNo++;
-                    var track = new Track((IListenToSessionEventAllocated) _listener);
-                    _listener.TrackCreated(trackNo);
+                    var track = new Track(reporter);
+                    reporter.TrackCreated(trackNo);
                     unAllocatedTalks = track.AllocateTalks(talks);
                     talks = unAllocatedTalks;
                 } while (unAllocatedTalks.Any());
+
+                File.WriteAllText(OutputTxt, reporter.Report());
             }
             catch (Exception ex)
             {

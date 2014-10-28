@@ -13,7 +13,7 @@ namespace ConferenceTrackManagement
 
         public string Report()
         {
-            return _builder.ToString().Replace("\r", string.Empty).TrimEnd('\r', '\n');
+            return _builder.ToString().TrimEnd('\r', '\n');
         }
 
         public void EventAllocated(string startTime, string eventName, string eventDuration)
