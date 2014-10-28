@@ -2,8 +2,12 @@
 
 namespace ConferenceTrackManagement
 {
-    public class Talk : ISessionEvent
+    public class Talk
     {
+        public readonly int Duration;
+        public readonly bool IsLightning;
+        public readonly string Name;
+
         public Talk(string name, int duration)
         {
             Name = name;
@@ -11,10 +15,7 @@ namespace ConferenceTrackManagement
             IsLightning = duration == 5;
         }
 
-        public string Name { get; private set; }
-        public int Duration { get; private set; }
         public DateTime StartTime { get; private set; }
-        public bool IsLightning { get; private set; }
 
         public Talk AssignStartTime(DateTime startTime)
         {

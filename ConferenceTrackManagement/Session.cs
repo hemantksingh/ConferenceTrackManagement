@@ -10,7 +10,7 @@ namespace ConferenceTrackManagement
         protected DateTime StartTime;
         protected int TotalCapacity;
 
-        public ISessionEvent AllocateTalk(Talk talk)
+        public Talk AllocateTalk(Talk talk)
         {
             if (!CanAccommodate(talk))
                 throw new SessionDurationExceededException(talk.Duration, TimeLeft());

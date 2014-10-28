@@ -7,6 +7,5 @@ namespace ConferenceTrackManagement
         string Name { get; }
         int Duration { get; }
         DateTime StartTime { get; }
-        bool IsLightning { get; }
     }
 }
