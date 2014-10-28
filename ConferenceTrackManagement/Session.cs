@@ -51,7 +51,7 @@ namespace ConferenceTrackManagement
         }
     }
 
-    internal class AfternoonSession : Session
+    public class AfternoonSession : Session
     {
         public AfternoonSession(IListenToSessionEventAllocated listener)
         {
@@ -67,7 +67,7 @@ namespace ConferenceTrackManagement
         }
     }
 
-    internal class MorningSession : Session
+    public class MorningSession : Session
     {
         public MorningSession(IListenToSessionEventAllocated listener)
         {

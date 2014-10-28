@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="ApplicationWithAnInvalidInput.cs" />
     <Compile Include="ApplicationWithAValidInput.cs" />
+    <Compile Include="FullAfternoonSession.cs" />
+    <Compile Include="FullMorningSession.cs" />
     <Compile Include="TalksWithTotalDurationHigherThanThatAllowedInATrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TalksWithTotalDurationWithinThatAllowedInATrack.cs" />
