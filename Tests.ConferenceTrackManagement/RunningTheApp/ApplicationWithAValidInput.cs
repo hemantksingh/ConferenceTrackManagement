@@ -23,7 +23,7 @@ namespace Tests.ConferenceTrackManagement.RunningTheApp
         [Test]
         public void ShouldAllocateTalksToConferenceTracks()
         {
-            string report = _reporter.Report().Replace("\r", string.Empty);
+            string report = _reporter.Report();
             Assert.AreEqual(_expectedOutput, report);
         }
 
