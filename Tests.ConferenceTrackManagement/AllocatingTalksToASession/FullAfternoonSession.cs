@@ -1,7 +1,7 @@
 ﻿using ConferenceTrackManagement;
 using NUnit.Framework;
 
-namespace Tests.ConferenceTrackManagement
+namespace Tests.ConferenceTrackManagement.AllocatingTalksToASession
 {
     class FullAfternoonSession
     {

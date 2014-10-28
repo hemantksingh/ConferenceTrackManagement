@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using ConferenceTrackManagement;
 using NUnit.Framework;
 
-namespace Tests.ConferenceTrackManagement
+namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
 {
-    public class TalksWithTotalDurationHigherThanThatAllowedInATrack
+    class TalksWithTotalDurationWithinThatAllowedInATrack
     {
         private readonly Track _track;
         private readonly Reporter _reporter;
-        private readonly IEnumerable<Talk> _unAllocateTalks;
 
-        public TalksWithTotalDurationHigherThanThatAllowedInATrack()
+        public TalksWithTotalDurationWithinThatAllowedInATrack()
         {
             _reporter = new Reporter();
             _track = new Track(_reporter);
@@ -27,10 +25,9 @@ namespace Tests.ConferenceTrackManagement
                 new Talk("Programming in the Boondocks of Seattle", 30),
                 new Talk("Ruby vs. Clojure for Back-End Development", 30),
                 new Talk("User Interface CSS in Rails Apps", 30),
-                new Talk("User Interface CSS in Rails Apps 2", 30),
             };
 
-            _unAllocateTalks = _track.AllocateTalks(talks);
+            _track.AllocateTalks(talks);
         }
 
         [Test]
@@ -40,9 +37,15 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
+        public void ShouldAllocateLunch()
+        {
+            Assert.IsTrue(_track.LunchHasBeenAllocated());
+        }
+
+        [Test]
         public void ShouldFillUpTheAfternoonSession()
         {
-            Assert.False(_track.AfternoonSession.CanAccommodate(new Talk("Another talk", 30)));
+            Assert.False(_track.AfternoonSession.CanAccommodate(new Talk("Another talk", 30)));            
         }
 
         [Test]
@@ -52,13 +55,7 @@ namespace Tests.ConferenceTrackManagement
         }
 
         [Test]
-        public void ShouldReturnTheUnAllocatedTalks()
-        {
-            Assert.AreEqual("User Interface CSS in Rails Apps 2", _unAllocateTalks.First().Name);
-        }
-
-        [Test]
-        public void ShouldNotAllocateTheLastTalkToTheTrack()
+        public void ShouldAllocateEachTalkToTheTrack()
         {
             const string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
 10:00AM Overdoing it in Python 45min
