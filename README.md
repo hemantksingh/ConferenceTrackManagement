@@ -1,4 +1,4 @@
-ConferenceTrackManagement
+Conference Track Management
 =========================
 
 Simple app for allocating talks to a conference. The solution consists of the core application logic, 
@@ -16,6 +16,6 @@ Running the app
 
 The app takes 'Input.txt' as the specified input and creates an 'Output.txt' file in the running directory.
 
-1. Open the solution using Visual Studio.
+1. Open the solution in an IDE.
 2. Run the 'ApplicationWithAValidInput' test to generate 'Output.txt'.
 
