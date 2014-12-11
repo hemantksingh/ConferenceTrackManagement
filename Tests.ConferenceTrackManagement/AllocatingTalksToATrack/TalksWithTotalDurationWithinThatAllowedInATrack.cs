@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ConferenceTrackManagement;
 using NUnit.Framework;
 
 namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
 {
-    class TalksWithTotalDurationWithinThatAllowedInATrack
+    class TalksWithTotalDurationWithinThatAllowedInATrack : IListenToSessionEventAllocated
     {
         private readonly Track _track;
-        private readonly Reporter _reporter;
+        private readonly UnAllocatedTalks _unAllocatedTalks;
+        private int _noOfTalksAllocated;
+        private readonly IList<string> _allocatedEvents = new List<string>();
 
         public TalksWithTotalDurationWithinThatAllowedInATrack()
         {
-            _reporter = new Reporter();
-            _track = new Track(_reporter);
+            _track = new Track(this);
             var talks = new List<Talk>
             {
                 new Talk("Writing Fast Tests Against Enterprise Rails", 60),
@@ -27,7 +29,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
                 new Talk("User Interface CSS in Rails Apps", 30),
             };
 
-            _track.AllocateTalks(talks);
+            _unAllocatedTalks = _track.AllocateTalks(talks);
         }
 
         [Test]
@@ -37,40 +39,38 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
         }
 
         [Test]
-        public void ShouldAllocateLunch()
-        {
-            Assert.IsTrue(_track.LunchHasBeenAllocated());
-        }
-
-        [Test]
         public void ShouldFillUpTheAfternoonSession()
         {
             Assert.False(_track.AfternoonSession.CanAccommodate(new Talk("Another talk", 30)));            
         }
 
         [Test]
+        public void ShouldAllocateLunch()
+        {
+            Assert.NotNull(_allocatedEvents.FirstOrDefault(s => s == "Lunch"));
+        }
+
+        [Test]
         public void ShouldAllocateNetworkingEvent()
         {
-            Assert.IsTrue(_track.NetworkingEventHasBeenAllocated());
+            Assert.NotNull(_allocatedEvents.FirstOrDefault(s => s == "Networking Event"));
         }
 
         [Test]
         public void ShouldAllocateEachTalkToTheTrack()
         {
-            string expectedReport = @"09:00AM Writing Fast Tests Against Enterprise Rails 60min
-10:00AM Overdoing it in Python 45min
-10:45AM Lua for the Masses 30min
-11:15AM Ruby Errors from Mismatched Gem Versions 45min
-12:00PM Lunch
-01:00PM Ruby on Rails: Why We Should Move On 60min
-02:00PM Common Ruby Errors 45min
-02:45PM Pair Programming vs Noise 45min
-03:30PM Programming in the Boondocks of Seattle 30min
-04:00PM Ruby vs. Clojure for Back-End Development 30min
-04:30PM User Interface CSS in Rails Apps 30min
-05:00PM Networking Event".Replace("\r", string.Empty);
+            Assert.AreEqual(10, _noOfTalksAllocated);
+            Assert.AreEqual(0, _unAllocatedTalks.Count());
+        }
 
-            Assert.AreEqual(expectedReport, _reporter.Report().Replace("\r", string.Empty));
+        public void EventAllocated(string startTime, string eventName, string eventDuration)
+        {
+            _noOfTalksAllocated++;
+        }
+
+        public void EventAllocated(string startTime, string eventName)
+        {
+            _allocatedEvents.Add(eventName);
         }
     }
 }
