@@ -9,7 +9,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToATrack
     {
         private readonly Track _track;
         private readonly Reporter _reporter;
-        private readonly IEnumerable<Talk> _unAllocateTalks;
+        private readonly UnAllocatedTalks _unAllocateTalks;
 
         public TalksWithTotalDurationHigherThanThatAllowedInATrack()
         {

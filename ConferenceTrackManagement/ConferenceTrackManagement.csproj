@@ -49,6 +49,7 @@
     <Compile Include="Session.cs" />
     <Compile Include="Talk.cs" />
     <Compile Include="Track.cs" />
+    <Compile Include="UnAllocatedTalks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Input.txt">

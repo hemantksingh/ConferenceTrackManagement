@@ -17,9 +17,9 @@ namespace ConferenceTrackManagement
             AfternoonSession = new AfternoonSession(listener);
         }
 
-        public IEnumerable<Talk> AllocateTalks(IEnumerable<Talk> talks)
+        public UnAllocatedTalks AllocateTalks(IEnumerable<Talk> talks)
         {
-            IList<Talk> unAllocatedTalks = new List<Talk>();
+            var unAllocatedTalks = new UnAllocatedTalks();
             foreach (Talk talk in talks)
             {
                 if (MorningSession.CanAccommodate(talk))
