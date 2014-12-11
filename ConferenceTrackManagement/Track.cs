@@ -8,7 +8,7 @@ namespace ConferenceTrackManagement
         public readonly Session MorningSession;
         private readonly IListenToSessionEventAllocated _listener;
         private Lunch _lunch;
-        private NetworkingEvent _networkingEvent;
+
 
         public Track(IListenToSessionEventAllocated listener)
         {
@@ -55,17 +55,12 @@ namespace ConferenceTrackManagement
 
         private void AllocateNetworkingEvent()
         {
-            PublishEventAllocated(_networkingEvent = new NetworkingEvent());
+            PublishEventAllocated(new NetworkingEvent());
         }
 
-        public bool LunchHasBeenAllocated()
+        private bool LunchHasBeenAllocated()
         {
             return _lunch != null;
-        }
-
-        public bool NetworkingEventHasBeenAllocated()
-        {
-            return _networkingEvent != null;
         }
     }
 
