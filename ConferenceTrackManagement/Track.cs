@@ -22,14 +22,10 @@ namespace ConferenceTrackManagement
             foreach (Talk talk in talks)
             {
                 if (MorningSession.CanAccommodate(talk))
-                {
                     MorningSession.AllocateTalk(talk);
-                }
                 else if (AfternoonSession.CanAccommodate(talk))
                 {
-                    if (!LunchHasBeenAllocated())
-                        AllocateLunch();
-
+                    AllocateLunchIfNeeded();
                     AfternoonSession.AllocateTalk(talk);
                 }
                 else
@@ -38,7 +34,7 @@ namespace ConferenceTrackManagement
 
             if (AfternoonSession.CanAllocateNetworkingEvent())
                 AllocateNetworkingEvent();
-            
+
             return unAllocatedTalks;
         }
 
@@ -47,19 +43,15 @@ namespace ConferenceTrackManagement
             _listener.EventAllocated(allocatedLunch.StartTime.ToString("hh:mmtt"), allocatedLunch.Name);
         }
 
-        private void AllocateLunch()
+        private void AllocateLunchIfNeeded()
         {
+            if (_lunch != null) return;
             PublishEventAllocated(_lunch = new Lunch());
         }
 
         private void AllocateNetworkingEvent()
         {
             PublishEventAllocated(new NetworkingEvent());
-        }
-
-        private bool LunchHasBeenAllocated()
-        {
-            return _lunch != null;
         }
     }
 
