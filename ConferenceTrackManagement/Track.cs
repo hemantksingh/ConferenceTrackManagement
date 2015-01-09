@@ -9,12 +9,11 @@ namespace ConferenceTrackManagement
         private readonly IListenToSessionEventAllocated _listener;
         private Lunch _lunch;
 
-
         public Track(IListenToSessionEventAllocated listener)
         {
             _listener = listener;
-            MorningSession = new MorningSession(listener);
-            AfternoonSession = new AfternoonSession(listener);
+            MorningSession = new Session(listener, 180, 9);
+            AfternoonSession = new Session(listener, 240, 13);
         }
 
         public UnAllocatedTalks AllocateTalks(IEnumerable<Talk> talks)

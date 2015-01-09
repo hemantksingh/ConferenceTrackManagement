@@ -5,11 +5,11 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToASession
 {
     internal class FullMorningSession
     {
-        private readonly MorningSession _morningSession;
+        private readonly Session _morningSession;
 
         public FullMorningSession()
         {
-            _morningSession = new MorningSession(new Reporter());
+            _morningSession = new Session(new Reporter(), 180, 9);
             _morningSession.AllocateTalk(new Talk("First talk", 60));
             _morningSession.AllocateTalk(new Talk("Second talk", 60));
             _morningSession.AllocateTalk(new Talk("Third talk", 60));

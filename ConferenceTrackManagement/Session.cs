@@ -4,21 +4,28 @@ using System.Linq;
 
 namespace ConferenceTrackManagement
 {
-    public abstract class Session
+    public class Session
     {
-        protected readonly IList<Talk> AllocatedTalks = new List<Talk>();
-        protected IListenToSessionEventAllocated Listener;
-        protected DateTime StartTime;
-        protected int TotalCapacity;
+        private readonly IList<Talk> _allocatedTalks = new List<Talk>();        
+        private readonly IListenToSessionEventAllocated _listener;
+        private readonly int _totalCapacity;
+        private DateTime _startTime;
+
+        public Session(IListenToSessionEventAllocated listener, int totalCapacity, int startTime)
+        {
+            _listener = listener;
+            _totalCapacity = totalCapacity;
+            _startTime = DateTime.Today.AddHours(startTime);
+        }
 
         public void AllocateTalk(Talk talk)
         {
             if (!CanAccommodate(talk))
                 throw new SessionDurationExceededException(talk.Duration, TimeLeft());
 
-            Talk talkWithStartTime = talk.AssignStartTime(StartTime);
-            StartTime = StartTime.AddMinutes(talk.Duration);
-            AllocatedTalks.Add(talkWithStartTime);
+            Talk talkWithStartTime = talk.AssignStartTime(_startTime);
+            _startTime = _startTime.AddMinutes(talk.Duration);
+            _allocatedTalks.Add(talkWithStartTime);
 
             PublishTalkAllocated(talkWithStartTime);
         }
@@ -30,55 +37,29 @@ namespace ConferenceTrackManagement
 
         private int TimeLeft()
         {
-            return TotalCapacity - AllocatedTalks.Sum(t => t.Duration);
+            return _totalCapacity - _allocatedTalks.Sum(t => t.Duration);
         }
 
         private void PublishTalkAllocated(Talk talk)
         {
-            Listener.EventAllocated(talk.StartTime.ToString("hh:mmtt"), talk.Name,
+            _listener.EventAllocated(talk.StartTime.ToString("hh:mmtt"), talk.Name,
                 talk.IsLightning ? "lightning" : talk.Duration + "min");
         }
 
-        public abstract bool CanAllocateNetworkingEvent();
+        public bool CanAllocateNetworkingEvent()
+        {
+            int totalDurationOfAllocatedTalks = _allocatedTalks.Sum(talk => talk.Duration);
+            return totalDurationOfAllocatedTalks >= 180 && totalDurationOfAllocatedTalks <= _totalCapacity;
+        }
     }
 
     public class SessionDurationExceededException : Exception
     {
-        public SessionDurationExceededException(int talkDuration, int sessionDuration) : base(string.Format(
-            "Unable to allocate talk with duration {0} min(s). Only {1} unallocated min(s) are left in this session.",
-            talkDuration, sessionDuration))
+        public SessionDurationExceededException(int talkDuration, int sessionDuration)
+            : base(string.Format(
+                "Unable to allocate talk with duration {0} min(s). Only {1} unallocated min(s) are left in this session.",
+                talkDuration, sessionDuration))
         {
-        }
-    }
-
-    public class AfternoonSession : Session
-    {
-        public AfternoonSession(IListenToSessionEventAllocated listener)
-        {
-            Listener = listener;
-            TotalCapacity = 240;
-            StartTime = DateTime.Today.AddHours(13);
-        }
-
-        public override bool CanAllocateNetworkingEvent()
-        {
-            int totalDurationOfAllocatedTalks = AllocatedTalks.Sum(talk => talk.Duration);
-            return totalDurationOfAllocatedTalks >= 180 && totalDurationOfAllocatedTalks <= TotalCapacity;
-        }
-    }
-
-    public class MorningSession : Session
-    {
-        public MorningSession(IListenToSessionEventAllocated listener)
-        {
-            Listener = listener;
-            TotalCapacity = 180;
-            StartTime = DateTime.Today.AddHours(9);
-        }
-
-        public override bool CanAllocateNetworkingEvent()
-        {
-            return false;
         }
     }
 }

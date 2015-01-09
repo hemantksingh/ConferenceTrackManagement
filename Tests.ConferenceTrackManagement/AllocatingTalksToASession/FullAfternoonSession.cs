@@ -9,7 +9,7 @@ namespace Tests.ConferenceTrackManagement.AllocatingTalksToASession
 
         public FullAfternoonSession()
         {
-            _afternoonSession = new AfternoonSession(new Reporter());
+            _afternoonSession = new Session(new Reporter(), 240, 13);
             _afternoonSession.AllocateTalk(new Talk("First talk", 60));
             _afternoonSession.AllocateTalk(new Talk("Second talk", 60));
             _afternoonSession.AllocateTalk(new Talk("Third talk", 60));
